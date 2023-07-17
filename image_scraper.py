@@ -1,7 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
 	
-url = "https://www.google.com/search?q=ideal+smile+dental+image&tbm=isch&ved=2ahUKEwi1rbahpYSAAxUumScCHXGRAtQQ2-cCegQIABAA&oq=flat+smile+dental+image&gs_lcp=CgNpbWcQA1AAWPcLYIQNaABwAHgCgAHuAogBvA6SAQcwLjUuMi4ymAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=tQ2sZPX-Ga6ynsEP8aKKoA0"
+im_class = input("Input class: ")
+
+if im_class == "ideal":
+    url = "https://www.google.com/search?q=ideal+smile+dental+image&tbm=isch&ved=2ahUKEwi1rbahpYSAAxUumScCHXGRAtQQ2-cCegQIABAA&oq=ideal+smile+dental+image&gs_lcp=CgNpbWcQA1AAWPcLYIQNaABwAHgCgAHuAogBvA6SAQcwLjUuMi4ymAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=tQ2sZPX-Ga6ynsEP8aKKoA0"
+
+if im_class == "flat":
+    url = ""
+
+if im_class == "reversed":
+    url = ""
 
 htmldata = requests.get(url).text
 
@@ -32,7 +41,6 @@ def download_image(url, save_path):
         print("Failed to download the image.")
 
 num = 0
-im_class = "ideal"
 for image_url in url_list:
     save_path = "dataset/{im_class}/{im_class}".format(im_class=im_class) + str(num) + ".jpg"
     download_image(image_url, save_path)

@@ -14,7 +14,7 @@ import os
 
 # api-endpoint
 URL = "https://duckduckgo.com/i.js"
-keyword = input('Enter the search keyword : ')
+keyword = input('Enter the search keyword : ') + " smile dental image"
 
 # defining a params dict for the parameters to be sent to the API
 PARAMS = {'l': 'us-en',
@@ -34,7 +34,7 @@ img_link = data["results"][0]['image']
 img_data = rq.get(img_link).content
 
 # os.mkdir('downloads')
-filename = "downloads/" + keyword + ".png"
+filename = "dataset/" + keyword + "/" + keyword + ".png"
 with open(filename, 'wb+') as f:
     f.write(img_data)
 

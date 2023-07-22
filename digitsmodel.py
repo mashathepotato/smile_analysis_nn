@@ -53,7 +53,7 @@ history = model.fit(
     x_train,
     y_train,
     batch_size=64,
-    epochs=2,
+    epochs=3,
     validation_data=(x_val, y_val),
 )
 

@@ -5,7 +5,7 @@ import dlib
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor("models/shape_predictor_68_face_landmarks.dat")
 
-img = cv2.imread("images/tony_stark.jpg")
+img = cv2.imread("images/two_faces.jpg")
 
 gray = cv2.cvtColor(src=img, code=cv2.COLOR_BGR2GRAY)
 
@@ -22,12 +22,15 @@ for face in faces:
     cv2.rectangle(img=img, pt1=(x1, y1), pt2=(x2, y2), color=(0, 255, 0), thickness=2)
 
     landmarks = predictor(image=gray, box=face)
+    print("Landmarks: ", landmarks)
 
     for n in range(48, 60):
         x = landmarks.part(n).x
         y = landmarks.part(n).y
 
         cv2.circle(img=img, center=(x, y), radius=3, color=(255, 0, 0), thickness=1)
+
+    cv2.circle(img=img, center=(100,100), radius=5, color=(0, 255, 0), thickness=10)
 
 cv2.imshow(winname="Mouth Recognition", mat=img)
 

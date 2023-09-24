@@ -1,0 +1,16 @@
+# ignore cloned interface
+prev_interface/
+
+# ignore captured images
+captured_image.jpg
+captured_image1.jpg
+cropped_captured_image.jpg
+
+__pycache__/
+
+# segmentation stuff
+mask_rcnn_coco.h5
+
+# smile arc stuff
+dataset/smile arc/
+raw_data/smile arc/

@@ -14,8 +14,9 @@ from pathlib import Path
 import os
 from os import listdir
 
+
 class ImageClassifier:
-  def __init__(self, str_path, img_height=28, img_width=28, batch_size=32, epochs=100):
+  def __init__(self, str_path, img_height=28, img_width=28, batch_size=32, epochs=10):
     self.str_path = str_path
     self.img_height = img_height
     self.img_width = img_width
@@ -91,51 +92,30 @@ class ImageClassifier:
     return model
 
   def train_model(self):
+
+    checkpoint_path = "models/sequential/cp.ckpt"
+    checkpoint_dir = os.path.dirname(os.path.join("models/sequential", checkpoint_path))
+
+    # Create a callback that saves the model's weights
+    cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
+                                                    save_weights_only=True,
+                                                    verbose=1)
+    
     history = self.model.fit(
         self.train_ds,
         validation_data=self.val_ds,
-        epochs=self.epochs
+        epochs=self.epochs,
+        callbacks=[cp_callback]
     )
     return history
+  
 
-  # def test_accuracy(self, test_class):
-  #   correct = 0
-  #   total = 0
-
-  #   for num in range(32):
-  #     test_dir_str = "dataset/test_og/{test_class}_test/{test_class}_cropped{num}.jpg".format(test_class=test_class, num=num)
-  #     test_dir = pathlib.Path(test_dir_str)
-
-  #     if not os.path.exists(test_dir_str):
-  #         continue
-
-  #     img = tf.keras.utils.load_img(
-  #         test_dir, target_size=(self.img_height, self.img_width)
-  #     )
-  #     img_array = tf.keras.utils.img_to_array(img)
-  #     img_array = tf.expand_dims(img_array, 0)  # Create a batch
-
-  #     predictions = self.model.predict(img_array)
-  #     score = tf.nn.softmax(predictions[0])
-
-  #     # print("TESTING ", test_dir_str)
-  #     # print(
-  #     #     "This image most likely belongs to {} with a {:.2f} percent confidence"
-  #     #     .format(self.class_names[np.argmax(score)], 100 * np.max(score))
-  #     # )
-
-  #     if str(self.class_names[np.argmax(score)]) == test_class + "_cropped":
-  #         correct += 1
-  #     total += 1
-
-  #   final_accuracy = (correct / total) * 100
-  #   return final_accuracy
-
+  # TEST ACCURACY ON NEW IMAGES
   def test_accuracy(self):
     correct = 0
     total = 0
-    for img in os.listdir("dataset/test"):
-      img_dir = os.path.join("dataset/test", img)
+    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test"):
+      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test", img)
       img_dir = pathlib.Path(img_dir)
 
       img = tf.keras.utils.load_img(
@@ -156,6 +136,52 @@ class ImageClassifier:
     print("Total testing: ", total)
     return final_accuracy
   
+
+  def analyze_image(self, img):
+    img_dir = Path(img)
+
+    img = tf.keras.utils.load_img(
+      img_dir, target_size=(self.img_height, self.img_width)
+    )
+
+    img_array = tf.keras.utils.img_to_array(img)
+    img_array = tf.expand_dims(img_array, 0)
+
+    predictions = self.model.predict(img_array)
+    score = tf.nn.softmax(predictions[0])
+
+    result = str(self.class_names[np.argmax(score)])
+
+    if "gummy" in result:
+      print("Excessive gingival display detected")
+    else:
+      print("No excessive gingival dispay detected")
+
+    return result
+  
+  def analyze_image(self):
+    img_dir = Path("cropped_captured_image.jpg")
+
+    img = tf.keras.utils.load_img(
+      img_dir, target_size=(self.img_height, self.img_width)
+    )  
+
+    img_array = tf.keras.utils.img_to_array(img)
+    img_array = tf.expand_dims(img_array, 0)
+
+    self.model.load_weights("models/sequential/cp.ckpt").expect_partial()
+
+    predictions = self.model.predict(img_array)
+    # predictions = self.model.load_weights("models/sequential/cp.ckpt")
+    score = tf.nn.softmax(predictions[0])
+
+    result = str(self.class_names[np.argmax(score)])
+
+    if "gummy" in result:
+      return True
+    
+    return False
+
 
   def visualize_training(self, history):
     acc = history.history['accuracy']
@@ -186,12 +212,19 @@ class ImageClassifier:
 if __name__ == "__main__":
   str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/gum"
   img_classifier = ImageClassifier(str_path)
-  history = img_classifier.train_model()
-  img_classifier.model.summary()
 
-  # print(img_classifier.test_accuracy("normal"))
-  # print(img_classifier.test_accuracy("gummy"))
 
-  print(img_classifier.test_accuracy())
+  # history = img_classifier.train_model()
+  # img_classifier.model.summary()
 
-  img_classifier.visualize_training(history)
+  # print(img_classifier.test_accuracy())
+
+  # img_classifier.visualize_training(history)
+
+  # CLASSIFY CUSTOM IMAGE
+  print(img_classifier.analyze_image())
+
+  if img_classifier.analyze_image():
+    print("Gummy smile detected")
+  else:
+    print("Normal smile")

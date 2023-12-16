@@ -53,16 +53,18 @@ def image_scraper(search_string, im_class, im_folder):
 def image_cropper(im_folder, im_class, resize=(28, 28)):
 
     # raw_data = "raw_data/" + im_folder + im_class
+    # USE THIS WHEN CURATING TEST DATA
     raw_data = "raw_data/raw_test/" + im_class
+    # raw_data = "raw_data/gum/" + im_class
     print("Extracting from: ", raw_data)
 
     # Load the detector and predictor
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("models/shape_predictor_68_face_landmarks.dat")
 
-    # Create the output folder if it doesn't exist
-    # output_folder = "dataset/" +im_folder + im_class + "_cropped"
+    # USE THIS FOR TESTING DOWNLOAD
     output_folder = "dataset/test/" + im_class + "_test"
+    # output_folder = "dataset/" + im_folder + im_class + "_cropped"
     print("Saving to: ", output_folder)
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -148,12 +150,22 @@ elif "inverted" in search_string or "reversed" in search_string:
 elif "gummy" in search_string:
     im_folder = "gum/"
     im_class = "gummy"
-else:
+elif "normal" in search_string or "non" in search_string:
     im_folder = "gum/"
     im_class = "normal"
+else:
+    print("That option does not exist")
 
 # Download raw images to raw_data
-image_scraper(search_string, im_class, im_folder)
+# image_scraper(search_string, im_class, im_folder)
 
-# Preprocess images and download to dataset
+
+'''Extracting from im_folder (set to raw_data or raw_data/raw_test)
+    Determines subfolder from search word (gum or smile arc type)
+    Preprocesses all files and downloads to dataset folder
+
+    BEFORE LAUNCHING:
+    -Determine extraction folder
+    -Determine cropped download folder (output_folder)
+'''
 image_cropper(im_folder, im_class, resize=(28, 28))

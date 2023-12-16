@@ -78,3 +78,6 @@ if __name__ == '__main__':
     window = CustomWidget()
     window.showFullScreen()  # Show the window in full-screen mode
     sys.exit(app.exec_())
+
+
+# Paths to change: main img, sequential train/test

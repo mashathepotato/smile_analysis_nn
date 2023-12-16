@@ -11,7 +11,7 @@ def main():
     image_cropper()
 
     # Call the preloaded model weights on preprocessed image
-    str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/gum"
+    str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/gum"
     img_classifier = ImageClassifier(str_path)
 
     result = img_classifier.analyze_image()

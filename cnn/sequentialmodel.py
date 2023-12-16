@@ -14,6 +14,9 @@ from pathlib import Path
 import os
 from os import listdir
 
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import seaborn as sns
+
 
 class ImageClassifier:
   def __init__(self, str_path, img_height=28, img_width=28, batch_size=32, epochs=10):
@@ -92,7 +95,6 @@ class ImageClassifier:
     return model
 
   def train_model(self):
-
     checkpoint_path = "models/sequential/cp.ckpt"
     checkpoint_dir = os.path.dirname(os.path.join("models/sequential", checkpoint_path))
 
@@ -114,8 +116,8 @@ class ImageClassifier:
   def test_accuracy(self):
     correct = 0
     total = 0
-    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test"):
-      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test", img)
+    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/test"):
+      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/test", img)
       img_dir = pathlib.Path(img_dir)
 
       img = tf.keras.utils.load_img(
@@ -125,19 +127,64 @@ class ImageClassifier:
       img_array = tf.keras.utils.img_to_array(img)
       img_array = tf.expand_dims(img_array, 0)  # Create a batch
 
+      # self.model.load_weights("models/sequential/cp.ckpt").expect_partial()
+
       predictions = self.model.predict(img_array)
       score = tf.nn.softmax(predictions[0])
 
-      if str(self.class_names[np.argmax(score)]) in str(img_dir):
+      # Print results image by image
+      # print(img_dir)
+      # print(str(self.class_names[np.argmax(score)]))
+
+      if str(self.class_names[np.argmax(score)]) in str(img_dir): # not sure about the not
         correct += 1
       total += 1
 
     final_accuracy = (correct / total) * 100
-    print("Total testing: ", total)
+    print("Original total testing: ", total)
     return final_accuracy
-  
 
-  def analyze_image(self, img):
+  def confusion_matrix(self):
+        true_labels = []
+        false_labels = []
+        predicted_labels = []
+
+        for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/test"):
+            img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/test", img)
+            img_dir = pathlib.Path(img_dir)
+
+            img = tf.keras.utils.load_img(
+                img_dir, target_size=(self.img_height, self.img_width)
+            )
+
+            img_array = tf.keras.utils.img_to_array(img)
+            img_array = tf.expand_dims(img_array, 0)  # Create a batch
+
+            predictions = self.model.predict(img_array)
+            predicted_label = np.argmax(tf.nn.softmax(predictions[0]))
+            predicted_labels.append(predicted_label)
+
+            true_label = int("gummy" in str(img_dir))  # Assuming "gummy" is present in the true label
+            false_label = int("gummy" not in str(img_dir))
+            true_labels.append(true_label)
+            false_labels.append(false_label)
+
+        print("True labels: ", true_labels)
+        print("predicted labels: ", predicted_labels)
+
+        cm = confusion_matrix(true_labels, predicted_labels)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=self.class_names)
+
+        correct = np.sum(np.diag(cm))
+        total = np.sum(cm)
+        final_accuracy = (correct / total) * 100
+        print("Total testing: ", total)
+        print(final_accuracy)
+
+        disp.plot()
+        plt.show()
+
+  def analyze__specific_image(self, img): # put any image path in parameter
     img_dir = Path(img)
 
     img = tf.keras.utils.load_img(
@@ -159,7 +206,7 @@ class ImageClassifier:
 
     return result
   
-  def analyze_image(self):
+  def analyze_image(self): # cropped image by default
     img_dir = Path("cropped_captured_image.jpg")
 
     img = tf.keras.utils.load_img(
@@ -172,7 +219,6 @@ class ImageClassifier:
     self.model.load_weights("models/sequential/cp.ckpt").expect_partial()
 
     predictions = self.model.predict(img_array)
-    # predictions = self.model.load_weights("models/sequential/cp.ckpt")
     score = tf.nn.softmax(predictions[0])
 
     result = str(self.class_names[np.argmax(score)])
@@ -210,21 +256,24 @@ class ImageClassifier:
 
 
 if __name__ == "__main__":
-  str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/gum"
+  str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/gum"
   img_classifier = ImageClassifier(str_path)
 
+  # Count gum images
+  # gummy_images = os.listdir(str_path + "/gummy_cropped")
+  # print("Gummy images: ", len(gummy_images))
 
-  # history = img_classifier.train_model()
-  # img_classifier.model.summary()
+  history = img_classifier.train_model()
+  img_classifier.model.summary()
 
-  # print(img_classifier.test_accuracy())
+  print(img_classifier.test_accuracy())
+
+  # Analyzes cropped image
+  # if img_classifier.analyze_image():
+  #   print("Gummy smile detected")
+  # else:
+  #   print("Normal smile")
+
+  img_classifier.confusion_matrix()
 
   # img_classifier.visualize_training(history)
-
-  # CLASSIFY CUSTOM IMAGE
-  print(img_classifier.analyze_image())
-
-  if img_classifier.analyze_image():
-    print("Gummy smile detected")
-  else:
-    print("Normal smile")

@@ -56,7 +56,7 @@ class ImageClassifier:
 
     return train_ds, val_ds, class_names
 
-  def build_model(self):
+  def build_model(self, learning_rate=0.001):
     data_augmentation = keras.Sequential(
           [
               tf.keras.layers.RandomFlip("horizontal",
@@ -88,6 +88,12 @@ class ImageClassifier:
       layers.Dense(self.num_classes)
     ])
 
+    # model.compile(optimizer="adam",
+    #               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    #               metrics=['accuracy'])
+
+    # optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+
     model.compile(optimizer="adam",
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
@@ -116,8 +122,8 @@ class ImageClassifier:
   def test_accuracy(self):
     correct = 0
     total = 0
-    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/test"):
-      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/test", img)
+    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test"):
+      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test", img)
       img_dir = pathlib.Path(img_dir)
 
       img = tf.keras.utils.load_img(
@@ -149,8 +155,8 @@ class ImageClassifier:
         false_labels = []
         predicted_labels = []
 
-        for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/test"):
-            img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/test", img)
+        for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test"):
+            img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test", img)
             img_dir = pathlib.Path(img_dir)
 
             img = tf.keras.utils.load_img(
@@ -256,7 +262,7 @@ class ImageClassifier:
 
 
 if __name__ == "__main__":
-  str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code Backup/dataset/gum"
+  str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/gum"
   img_classifier = ImageClassifier(str_path)
 
   # Count gum images

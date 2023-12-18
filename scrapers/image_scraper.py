@@ -54,17 +54,17 @@ def image_cropper(im_folder, im_class, resize=(28, 28)):
 
     # raw_data = "raw_data/" + im_folder + im_class
     # USE THIS WHEN CURATING TEST DATA
-    raw_data = "raw_data/raw_test/" + im_class
-    # raw_data = "raw_data/gum/" + im_class
+    # raw_data = "raw_data/raw_test/" + im_class
+    raw_data = "raw_data/gum/" + im_class
     print("Extracting from: ", raw_data)
 
     # Load the detector and predictor
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("models/shape_predictor_68_face_landmarks.dat")
 
-    # USE THIS FOR TESTING DOWNLOAD
-    output_folder = "dataset/test/" + im_class + "_test"
-    # output_folder = "dataset/" + im_folder + im_class + "_cropped"
+    # USE THIS FOR TEST DOWNLOAD
+    # output_folder = "dataset/test/" + im_class + "_test"
+    output_folder = "dataset/" + im_folder + im_class + "_cropped"
     print("Saving to: ", output_folder)
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -165,7 +165,7 @@ else:
     Preprocesses all files and downloads to dataset folder
 
     BEFORE LAUNCHING:
-    -Determine extraction folder
+    -Determine extraction folder (input images)
     -Determine cropped download folder (output_folder)
 '''
 image_cropper(im_folder, im_class, resize=(28, 28))

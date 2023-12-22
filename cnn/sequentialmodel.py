@@ -280,6 +280,6 @@ if __name__ == "__main__":
   # else:
   #   print("Normal smile")
 
-  img_classifier.confusion_matrix()
-
+  # Plots
+  # img_classifier.confusion_matrix()
   # img_classifier.visualize_training(history)

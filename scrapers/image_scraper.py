@@ -84,7 +84,6 @@ def image_cropper(im_folder, im_class, resize=(28, 28)):
         faces = detector(gray)
 
         if len(faces) >= 2:
-            print("Image " + filename + " has multiple faces")
             flag = True
             continue
 
@@ -92,7 +91,6 @@ def image_cropper(im_folder, im_class, resize=(28, 28)):
             resized_mouth = cv2.resize(img, resize)
         
         if len(faces) == 1:
-            print("Image " + filename + " has one face")
             face = faces[0]
             landmarks = predictor(image=gray, box=face)
 

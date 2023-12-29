@@ -122,8 +122,8 @@ class ImageClassifier:
   def test_accuracy(self):
     correct = 0
     total = 0
-    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test"):
-      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test", img)
+    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_test"):
+      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_test", img)
       img_dir = pathlib.Path(img_dir)
 
       img = tf.keras.utils.load_img(
@@ -138,13 +138,23 @@ class ImageClassifier:
       predictions = self.model.predict(img_array)
       score = tf.nn.softmax(predictions[0])
 
+      prediction_label = str(self.class_names[np.argmax(score)])
+
       # Print results image by image
       # print(img_dir)
-      # print(str(self.class_names[np.argmax(score)]))
+      # print(prediction_label)
 
-      if str(self.class_names[np.argmax(score)]) in str(img_dir): # not sure about the not
+      if "gummy" in prediction_label and "gummy" in str(img_dir):
         correct += 1
+      if "normal" in prediction_label and "normal" in str(img_dir):
+        correct += 1
+      print(correct)
       total += 1
+
+      # if str(self.class_names[np.argmax(score)]) not in str(img_dir): # not sure about the not
+      #   correct += 1
+      # print(correct)
+      # total += 1
 
     final_accuracy = (correct / total) * 100
     print("Original total testing: ", total)
@@ -155,8 +165,8 @@ class ImageClassifier:
         false_labels = []
         predicted_labels = []
 
-        for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test"):
-            img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test", img)
+        for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_test"):
+            img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_test", img)
             img_dir = pathlib.Path(img_dir)
 
             img = tf.keras.utils.load_img(
@@ -262,7 +272,7 @@ class ImageClassifier:
 
 
 if __name__ == "__main__":
-  str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/gum"
+  str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_gum"
   img_classifier = ImageClassifier(str_path)
 
   # Count gum images

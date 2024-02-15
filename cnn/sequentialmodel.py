@@ -19,7 +19,7 @@ import seaborn as sns
 
 
 class ImageClassifier:
-  def __init__(self, str_path, img_height=28, img_width=28, batch_size=32, epochs=10):
+  def __init__(self, str_path, img_height=28, img_width=28, batch_size=32, epochs=80):
     self.str_path = str_path
     self.img_height = img_height
     self.img_width = img_width
@@ -69,7 +69,22 @@ class ImageClassifier:
                 fill_mode="reflect",
                 interpolation="bilinear",
                 seed=123),
-              tf.keras.layers.RandomContrast(factor=(0.25, 0.75), seed=123)
+              tf.keras.layers.RandomZoom(
+                  height_factor=(0.1, 0.2),
+                  width_factor=None,
+                  fill_mode="reflect",
+                  interpolation="bilinear",
+                  seed=123
+              ),
+              tf.keras.layers.RandomZoom(
+                  height_factor=(-0.1, 0.1),
+                  width_factor=(-0.1, 0.1),
+                  fill_mode="reflect",
+                  interpolation="bilinear",
+                  seed=123
+              ),
+            tf.keras.layers.RandomContrast(factor=(0.25, 0.75), seed=123),
+            tf.keras.layers.RandomBrightness(factor=(-0.5, 0.5), seed=123)
           ]
       )
     
@@ -122,8 +137,8 @@ class ImageClassifier:
   def test_accuracy(self):
     correct = 0
     total = 0
-    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_test"):
-      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_test", img)
+    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test"):
+      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test", img)
       img_dir = pathlib.Path(img_dir)
 
       img = tf.keras.utils.load_img(
@@ -148,7 +163,7 @@ class ImageClassifier:
         correct += 1
       if "normal" in prediction_label and "normal" in str(img_dir):
         correct += 1
-      print(correct)
+      # print(correct)
       total += 1
 
       # if str(self.class_names[np.argmax(score)]) not in str(img_dir): # not sure about the not
@@ -180,8 +195,8 @@ class ImageClassifier:
             predicted_label = np.argmax(tf.nn.softmax(predictions[0]))
             predicted_labels.append(predicted_label)
 
-            true_label = int("gummy" in str(img_dir))  # Assuming "gummy" is present in the true label
-            false_label = int("gummy" not in str(img_dir))
+            false_label = int("gummy" in str(img_dir))  # Assuming "gummy" is present in the true label
+            true_label = int("gummy" not in str(img_dir))
             true_labels.append(true_label)
             false_labels.append(false_label)
 
@@ -292,4 +307,4 @@ if __name__ == "__main__":
 
   # Plots
   # img_classifier.confusion_matrix()
-  # img_classifier.visualize_training(history)
+  img_classifier.visualize_training(history)

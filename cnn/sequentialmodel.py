@@ -19,7 +19,7 @@ import seaborn as sns
 
 
 class ImageClassifier:
-  def __init__(self, str_path, img_height=28, img_width=28, batch_size=32, epochs=80):
+  def __init__(self, str_path, img_height=28, img_width=28, batch_size=32, epochs=150):
     self.str_path = str_path
     self.img_height = img_height
     self.img_width = img_width
@@ -137,8 +137,8 @@ class ImageClassifier:
   def test_accuracy(self):
     correct = 0
     total = 0
-    for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test"):
-      img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/test", img)
+    for img in os.listdir('dataset/test'):
+      img_dir = os.path.join('dataset/test', img)
       img_dir = pathlib.Path(img_dir)
 
       img = tf.keras.utils.load_img(
@@ -180,8 +180,8 @@ class ImageClassifier:
         false_labels = []
         predicted_labels = []
 
-        for img in os.listdir("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_test"):
-            img_dir = os.path.join("C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_test", img)
+        for img in os.listdir('dataset/mixed_test'):
+            img_dir = os.path.join('dataset/mixed_test', img)
             img_dir = pathlib.Path(img_dir)
 
             img = tf.keras.utils.load_img(
@@ -287,7 +287,7 @@ class ImageClassifier:
 
 
 if __name__ == "__main__":
-  str_path = "C:/Users/realc/OneDrive/Documents/IoM/Code/dataset/mixed_gum"
+  str_path = 'dataset/mixed_gum'
   img_classifier = ImageClassifier(str_path)
 
   # Count gum images

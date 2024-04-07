@@ -14,3 +14,6 @@ mask_rcnn_coco.h5
 # smile arc stuff
 dataset/smile arc/
 raw_data/
+
+# environment stuff
+.conda/*
